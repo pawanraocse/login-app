@@ -55,6 +55,23 @@ Postgres (Keycloak DB), Redis (sessions), KMS/HSM keys
 - Per-tenant keys managed by Keycloak; JWKS endpoint per realm:
   - GET /realms/{realm}/protocol/openid-connect/certs
   - GET /realms/{realm}/.well-known/openid-configuration
+- **Login/Token Flow (per-tenant, end-to-end):**
+  1. Login service is up and running.
+  2. Other services (e.g., image gallery) are also running.
+  3. All services are connected via an application gateway (API Gateway/Reverse Proxy).
+  4. User opens the UI and sees the login dialog.
+  5. User enters tenant id, username, and password.
+  6. Login service authenticates the user for the specified tenant:
+     - Looks up the tenant DB using the tenant id.
+     - Runs Flyway migration on-demand if needed.
+     - Authenticates the user against the tenant's DB.
+     - Issues a JWT token containing tenant id and user info.
+  7. User receives the token.
+  8. User uses this token to access other services (e.g., image gallery):
+     - Token is sent with each request (e.g., in Authorization header).
+     - Application gateway and downstream services validate the token.
+     - Services extract tenant id from the token and route/authorize requests accordingly.
+     - User can only access resources belonging to their tenant.
 
 ## 5. Federation Strategy
 - Primary OIDC/SAML Provider: Keycloak issues tokens and consumes SAML assertions.
