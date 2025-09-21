@@ -1,0 +1,54 @@
+{
+  "id": "stage-realm",
+  "realm": "stage-realm",
+  "enabled": true,
+  "displayName": "Staging Realm",
+  "clients": [
+    {
+      "clientId": "stage-client",
+      "name": "Stage Client",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "secret": "REPLACE_WITH_STRONG_SECRET",
+      "redirectUris": [
+        "https://stage.yourdomain.com/callback"
+      ],
+      "webOrigins": [
+        "https://stage.yourdomain.com"
+      ],
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "fullScopeAllowed": false,
+      "attributes": {
+        "client.secret.creation.time": "2025-09-20T00:00:00Z"
+      }
+    }
+  ],
+  "users": [
+    {
+      "username": "stageuser",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Stage",
+      "lastName": "User",
+      "email": "stageuser@example.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "changeme",
+          "temporary": true
+        }
+      ],
+      "realmRoles": ["default-roles-stage-realm"]
+    }
+  ],
+  "roles": {
+    "realm": [
+      { "name": "default-roles-stage-realm" }
+    ]
+  }
+}
+

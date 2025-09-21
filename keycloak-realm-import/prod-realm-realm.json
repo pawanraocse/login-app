@@ -1,0 +1,36 @@
+{
+  "id": "prod-realm",
+  "realm": "prod-realm",
+  "enabled": true,
+  "displayName": "Production Realm",
+  "clients": [
+    {
+      "clientId": "prod-client",
+      "name": "Prod Client",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "secret": "REPLACE_WITH_STRONG_SECRET",
+      "redirectUris": [
+        "https://yourdomain.com/callback"
+      ],
+      "webOrigins": [
+        "https://yourdomain.com"
+      ],
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "fullScopeAllowed": false,
+      "attributes": {
+        "client.secret.creation.time": "2025-09-20T00:00:00Z"
+      }
+    }
+  ],
+  "users": [],
+  "roles": {
+    "realm": [
+      { "name": "default-roles-prod-realm" }
+    ]
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "id": "dev-realm",
+  "realm": "dev-realm",
+  "enabled": true,
+  "displayName": "Development Realm",
+  "clients": [
+    {
+      "clientId": "dev-client",
+      "name": "Dev Client",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "redirectUris": [
+        "http://localhost:8080/*"
+      ],
+      "webOrigins": [
+        "http://localhost:8080"
+      ],
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": false,
+      "fullScopeAllowed": true,
+      "attributes": {
+        "client.secret.creation.time": "${date:now}"
+      }
+    }
+  ],
+  "users": [
+    {
+      "username": "devuser",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Dev",
+      "lastName": "User",
+      "email": "devuser@example.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "devpass",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["default-roles-dev-realm"]
+    }
+  ]
+}

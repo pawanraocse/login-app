@@ -1,0 +1,81 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16.2
+    container_name: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: ${KC_DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${KC_DB_PASSWORD:-postgres}
+    volumes:
+      - kc_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - kc_net
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0.4
+    container_name: keycloak
+    restart: unless-stopped
+    # For production, use 'start' and configure DB.
+    command: start --import-realm
+    environment:
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN:-admin}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin}
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
+      KC_DB_USERNAME: ${KC_DB_USERNAME:-postgres}
+      KC_DB_PASSWORD: ${KC_DB_PASSWORD:-postgres}
+      # KC_HOSTNAME: your.domain.com # Uncomment and set for production
+      KC_HOSTNAME_STRICT: 'false' # Set to 'true' and specify your domain in production
+      KC_HTTP_ENABLED: 'true' # Set to 'false' and use HTTPS in prod
+      # KC_PROXY: 'edge' # Uncomment if running behind a reverse proxy
+      KC_METRICS_ENABLED: 'true'
+      KC_LOG_LEVEL: 'INFO'
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - kc_keycloak_data:/opt/keycloak/data
+      - ./keycloak-realm-import:/opt/keycloak/data/import:ro # Enable realm import for step-by-step automation
+    networks:
+      - kc_net
+    ports:
+      - "8080:8080" # Remove or restrict in prod, expose only if needed
+      - "8443:8443" # HTTPS port, remove or restrict in prod
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/realms/master"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+volumes:
+  kc_keycloak_data:
+  kc_postgres_data:
+
+networks:
+  kc_net:
+    driver: bridge
+
+# ---
+# Production notes:
+# - For production, use an external database (Postgres, MySQL, etc.) instead of H2.
+# - Set KC_HTTP_ENABLED to 'false' and use HTTPS in production.
+# - Set KC_HOSTNAME and KC_HOSTNAME_STRICT to your public domain for production.
+# - Use strong, unique passwords for all secrets (see .env.example).
+# - Remove or restrict ports as needed.
+# - Use --import-realm only for initial setup or migrations.
+# - Monitor logs and metrics for health and security.
+# ---
+
+# .env.example (do not commit real secrets)
+# KC_DB_USERNAME=postgres
+# KC_DB_PASSWORD=your-strong-db-password
+# KEYCLOAK_ADMIN=admin
+# KEYCLOAK_ADMIN_PASSWORD=your-strong-admin-password
