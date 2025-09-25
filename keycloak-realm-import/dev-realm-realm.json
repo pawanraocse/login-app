@@ -9,7 +9,7 @@
       "name": "Dev Client",
       "enabled": true,
       "protocol": "openid-connect",
-      "publicClient": true,
+      "publicClient": false,
       "redirectUris": [
         "http://localhost:8080/*"
       ],
