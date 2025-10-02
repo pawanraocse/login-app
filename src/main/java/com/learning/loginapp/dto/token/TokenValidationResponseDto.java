@@ -1,4 +1,4 @@
-package com.learning.loginapp.dto;
+package com.learning.loginapp.dto.token;
 
 import java.util.Map;
 
@@ -7,4 +7,3 @@ public record TokenValidationResponseDto(
     Map<String, Object> claims,
     String error
 ) {}
-

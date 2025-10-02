@@ -1,14 +1,14 @@
 package com.learning.loginapp.service;
 
-import com.learning.loginapp.dto.LoginRequestDto;
-import com.learning.loginapp.dto.LoginResponseDto;
-import com.learning.loginapp.dto.LogoutRequestDto;
-import com.learning.loginapp.dto.LogoutResponseDto;
-import com.learning.loginapp.dto.SsoLoginUrlResponseDto;
-import com.learning.loginapp.dto.TenantDiscoveryRequestDto;
-import com.learning.loginapp.dto.TenantDiscoveryResponseDto;
-import com.learning.loginapp.dto.TokenValidationRequestDto;
-import com.learning.loginapp.dto.TokenValidationResponseDto;
+import com.learning.loginapp.dto.login.LoginRequestDto;
+import com.learning.loginapp.dto.login.LoginResponseDto;
+import com.learning.loginapp.dto.login.LogoutRequestDto;
+import com.learning.loginapp.dto.login.LogoutResponseDto;
+import com.learning.loginapp.dto.login.SsoLoginUrlResponseDto;
+import com.learning.loginapp.dto.tenant.TenantDiscoveryRequestDto;
+import com.learning.loginapp.dto.tenant.TenantDiscoveryResponseDto;
+import com.learning.loginapp.dto.token.TokenValidationRequestDto;
+import com.learning.loginapp.dto.token.TokenValidationResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;

@@ -1,6 +1,15 @@
 package com.learning.loginapp.controller;
 
-import com.learning.loginapp.dto.*;
+import com.learning.loginapp.dto.app.HealthResponseDto;
+import com.learning.loginapp.dto.login.LoginRequestDto;
+import com.learning.loginapp.dto.login.LoginResponseDto;
+import com.learning.loginapp.dto.login.LogoutRequestDto;
+import com.learning.loginapp.dto.login.LogoutResponseDto;
+import com.learning.loginapp.dto.token.TokenValidationRequestDto;
+import com.learning.loginapp.dto.token.TokenValidationResponseDto;
+import com.learning.loginapp.dto.tenant.TenantDiscoveryRequestDto;
+import com.learning.loginapp.dto.tenant.TenantDiscoveryResponseDto;
+import com.learning.loginapp.dto.login.SsoLoginUrlResponseDto;
 import com.learning.loginapp.service.LoginService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

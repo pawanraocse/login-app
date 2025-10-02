@@ -3,9 +3,13 @@ package com.learning.loginapp.domain;
 import jakarta.persistence.*;
 import java.time.OffsetDateTime;
 import java.util.UUID;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "tenants")
+@Getter
+@Setter
 public class Tenant {
     @Id
     @GeneratedValue
@@ -31,7 +35,4 @@ public class Tenant {
 
     @Column(name = "updated_at", nullable = false)
     private OffsetDateTime updatedAt;
-
-    // Getters, setters, equals, hashCode, toString
 }
-

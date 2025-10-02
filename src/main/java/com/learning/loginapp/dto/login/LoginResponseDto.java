@@ -1,4 +1,4 @@
-package com.learning.loginapp.dto;
+package com.learning.loginapp.dto.login;
 
 import java.util.Map;
 
@@ -9,4 +9,3 @@ public record LoginResponseDto(
     long expiresIn,
     Map<String, Object> claims
 ) {}
-

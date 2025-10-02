@@ -1,4 +1,4 @@
-package com.learning.loginapp.dto;
+package com.learning.loginapp.dto.tenant;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;

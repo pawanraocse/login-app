@@ -1,4 +1,4 @@
-package com.learning.loginapp.dto;
+package com.learning.loginapp.dto.tenant;
 
 public record TenantDiscoveryResponseDto(
     String realm,
@@ -6,4 +6,3 @@ public record TenantDiscoveryResponseDto(
     String config,
     String ssoLoginUrl
 ) {}
-

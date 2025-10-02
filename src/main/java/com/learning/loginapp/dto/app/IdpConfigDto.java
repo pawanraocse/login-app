@@ -1,4 +1,4 @@
-package com.learning.loginapp.dto;
+package com.learning.loginapp.dto.app;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -15,4 +15,3 @@ public record IdpConfigDto(
     OffsetDateTime createdAt,
     OffsetDateTime updatedAt
 ) {}
-
