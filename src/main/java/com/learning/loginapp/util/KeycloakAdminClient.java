@@ -85,6 +85,24 @@ public class KeycloakAdminClient {
         return realmName + "-client";
     }
 
+    public String createClient(String realmName, String clientId, String clientName, Map<String, Object> config) {
+        String accessToken = getAdminAccessToken();
+        Map<String, Object> payload = new java.util.HashMap<>();
+        payload.put("clientId", clientId);
+        payload.put("name", clientName);
+        payload.put("enabled", true);
+        if (config != null) payload.putAll(config);
+        log.info("Creating client {} for realm {}", clientId, realmName);
+        webClient.post()
+                .uri(keycloakAdminUrl + "/admin/realms/" + realmName + "/clients")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                .bodyValue(payload)
+                .retrieve()
+                .bodyToMono(Void.class)
+                .block();
+        return clientId;
+    }
+
     public void createAdminUser(String realmName, String username, String email, String password) {
         String accessToken = getAdminAccessToken();
         Map<String, Object> payload = Map.of(
