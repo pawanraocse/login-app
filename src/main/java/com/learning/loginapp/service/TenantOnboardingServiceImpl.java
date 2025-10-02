@@ -9,10 +9,13 @@ import com.learning.loginapp.util.KeycloakAdminClient;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -24,8 +27,9 @@ public class TenantOnboardingServiceImpl implements TenantOnboardingService {
     @Override
     @Transactional
     public TenantOnboardingResponseDto onboardTenant(TenantOnboardingRequestDto request) {
-        String userId = "system"; // TODO: extract from security context
-        String requestId = java.util.UUID.randomUUID().toString();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = (authentication != null && authentication.isAuthenticated()) ? authentication.getName() : "null";
+        String requestId = UUID.randomUUID().toString();
         log.info("[onboardTenant] userId={}, requestId={}, operation=onboardTenant, tenantName={}", userId, requestId, request.tenantName());
         if (tenantRepository.findByName(request.tenantName()).isPresent()) {
             return new TenantOnboardingResponseDto(null, null, null, "FAILURE", "Tenant name already exists");

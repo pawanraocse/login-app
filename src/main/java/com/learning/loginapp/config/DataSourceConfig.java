@@ -17,9 +17,16 @@ import java.util.Map;
 public class DataSourceConfig {
     @Bean
     public DataSource dataSource() {
+        // Register default DataSource for onboarding/global ops
+        TenantDataSourceProvider.getOrCreateAndMigrateDataSource(
+            "default",
+            "jdbc:postgresql://localhost:5432/keycloak", // or your main DB
+            "postgres",
+            "postgres"
+        );
         MultiTenantDataSource dataSource = new MultiTenantDataSource();
         dataSource.setTargetDataSources(TenantDataSourceProvider.getAllDataSources());
-        dataSource.setDefaultTargetDataSource(TenantDataSourceProvider.getDataSource("tenant_abc"));
+        dataSource.setDefaultTargetDataSource(TenantDataSourceProvider.getDataSource("default"));
         return dataSource;
     }
 

@@ -5,7 +5,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.Map;
 
@@ -27,7 +29,27 @@ public class KeycloakAdminClient {
                 .build();
     }
 
+    private String getAdminAccessToken() {
+        try {
+            Map<String, String> tokenResponse = webClient.post()
+                .uri(keycloakAdminUrl + "/realms/master/protocol/openid-connect/token")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .body(BodyInserters.fromFormData("grant_type", "password")
+                        .with("client_id", "admin-cli")
+                        .with("username", adminUsername)
+                        .with("password", adminPassword))
+                .retrieve()
+                .bodyToMono(Map.class)
+                .block();
+            return (String) tokenResponse.get("access_token");
+        } catch (WebClientResponseException ex) {
+            log.error("Failed to get admin access token from Keycloak: {}", ex.getResponseBodyAsString());
+            throw new RuntimeException("Keycloak admin token error: " + ex.getMessage(), ex);
+        }
+    }
+
     public String createRealm(String realmName, Map<String, Object> branding, Map<String, Object> policies) {
+        String accessToken = getAdminAccessToken();
         Map<String, Object> payload = Map.of(
                 "realm", realmName,
                 "enabled", true,
@@ -37,7 +59,7 @@ public class KeycloakAdminClient {
         log.info("Creating realm {} via Keycloak Admin API", realmName);
         webClient.post()
                 .uri(keycloakAdminUrl + "/admin/realms")
-                .headers(headers -> headers.setBasicAuth(adminUsername, adminPassword))
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .bodyValue(payload)
                 .retrieve()
                 .bodyToMono(Void.class)
@@ -46,6 +68,7 @@ public class KeycloakAdminClient {
     }
 
     public String createClient(String realmName) {
+        String accessToken = getAdminAccessToken();
         Map<String, Object> payload = Map.of(
                 "clientId", realmName + "-client",
                 "enabled", true,
@@ -54,7 +77,7 @@ public class KeycloakAdminClient {
         log.info("Creating client for realm {}", realmName);
         webClient.post()
                 .uri(keycloakAdminUrl + "/admin/realms/" + realmName + "/clients")
-                .headers(headers -> headers.setBasicAuth(adminUsername, adminPassword))
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .bodyValue(payload)
                 .retrieve()
                 .bodyToMono(Void.class)
@@ -63,6 +86,7 @@ public class KeycloakAdminClient {
     }
 
     public void createAdminUser(String realmName, String username, String email, String password) {
+        String accessToken = getAdminAccessToken();
         Map<String, Object> payload = Map.of(
                 "username", username,
                 "email", email,
@@ -72,11 +96,10 @@ public class KeycloakAdminClient {
         log.info("Creating admin user {} for realm {}", username, realmName);
         webClient.post()
                 .uri(keycloakAdminUrl + "/admin/realms/" + realmName + "/users")
-                .headers(headers -> headers.setBasicAuth(adminUsername, adminPassword))
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .bodyValue(payload)
                 .retrieve()
                 .bodyToMono(Void.class)
                 .block();
     }
 }
-
